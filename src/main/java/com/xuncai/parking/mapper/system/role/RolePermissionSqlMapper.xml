@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuncai.parking.mapper.system.role.RolePermissionSqlMapper" >
+    <!-- Result Map-->
+    <resultMap id="BaseResultMap" type="com.xuncai.parking.bean.system.role.query.RolePermissionQuery" >
+        <result column="permission_key" property="permissionKey"/>
+        <result column="role_key" property="roleKey"/>
+        <result column="permission_key" property="permissionKey"/>
+    </resultMap>
+
+    <!-- t_role_permission_relationship table all fields -->
+    <sql id="Base_Column_List" >
+			relationship_key,
+			permission_key,
+			role_key,
+			creator,
+			create_time
+	</sql>
+
+    <!-- 插入记录 -->
+    <insert id="insertRolePermissionRelationship" parameterType="com.xuncai.parking.bean.system.role.query.RolePermissionQuery" >
+		insert into t_role_permission_relationship(
+				relationship_key,
+				permission_key,
+				role_key,
+				creator,
+				create_time
+		)values (
+				#{relationshipKey,jdbcType=VARCHAR},
+				#{permissionKey,jdbcType=VARCHAR},
+				#{roleKey,jdbcType=VARCHAR},
+				#{creator,jdbcType=VARCHAR},
+				#{createTime,jdbcType=VARCHAR}
+		)
+	</insert>
+
+    <!-- 根据id，修改记录-->
+    <update id="updateRolePermissionRelationship" parameterType="com.xuncai.parking.bean.system.role.query.RolePermissionQuery" >
+	 	update t_role_permission_relationship set
+
+				permission_key = #{permissionKey,jdbcType=VARCHAR},
+				role_key = #{roleKey,jdbcType=VARCHAR},
+				creator = #{creator,jdbcType=VARCHAR},
+				create_time = #{createTime,jdbcType=VARCHAR}
+		where relationship_key = #{relationshipKey}
+	</update>
+
+    <delete id="deleteRolePermissionRelationship" parameterType="com.xuncai.parking.bean.system.role.query.RolePermissionQuery">
+		delete from t_role_permission_relationship where relationship_key = #{relationshipKey}
+	</delete>
+    <delete id="deletePermissionByRoleId" parameterType="Object" >
+		delete from t_role_permission_relationship where role_key = #{roleKey}
+	</delete>
+
+    <update id="updateRolePermissionRelationshipBySelective" parameterType="com.xuncai.parking.bean.system.role.query.RolePermissionQuery" >
+        update t_role_permission_relationship
+        <set>
+            <if test="permissionKey != null and permissionKey != ''">
+                permission_key = #{permissionKey},
+            </if>
+            <if test="roleKey != null and roleKey != ''">
+                role_key = #{roleKey},
+            </if>
+            <if test="creator != null and creator != ''">
+                creator = #{creator},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where relationship_key = #{relationshipKey}
+    </update>
+    <!-- 自定义sql -->
+    <!-- 查询条件 -->
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim  suffixOverrides="," >
+            <if test="relationshipKey != null and relationshipKey != ''">
+                and relationship_key = #{relationshipKey}
+            </if>
+            <if test="permissionKey != null and permissionKey != ''">
+                and permission_key = #{permissionKey}
+            </if>
+            <if test="roleKey != null and roleKey != ''">
+                and role_key = #{roleKey}
+            </if>
+            <if test="creator != null and creator != ''">
+                and creator = #{creator}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+        </trim>
+    </sql>
+    <!-- bean 扩展字段  -->
+    <resultMap id="BaseResultMapVo" extends="BaseResultMap" type="com.xuncai.parking.bean.system.role.query.RolePermissionQuery" >
+
+    </resultMap>
+    <!-- t_role_permission_relationship 信息 -->
+    <select id="getRolePermissionRelationshipVoById"  resultMap="BaseResultMapVo" parameterType="Object">
+        select
+        <include refid="Base_Column_List" />
+        from t_role_permission_relationship
+        where relationship_key = #{relationshipKey}
+    </select>
+
+    <select id="getRolePermissionRelationshipCountByQuery" resultType="java.lang.Long"  parameterType="Object">
+        select count(1)
+        from t_role_permission_relationship
+        <include refid="Example_Where_Clause"/>
+    </select>
+
+    <!-- 查询t_role_permission_relationship列表 -->
+    <select id="getRolePermissionRelationshipListByQuery" resultMap="BaseResultMapVo"  parameterType="Object">
+        select
+        <include refid="Base_Column_List"/>
+        from t_role_permission_relationship
+        <include refid="Example_Where_Clause"/>
+    </select>
+
+    <delete id="deleteRelationshipByRoleKey" parameterType="Object">
+		delete from t_role_permission_relationship where role_key = #{roleKey}
+	</delete>
+
+    <insert id="batchInsert" >
+        insert into t_role_permission_relationship(
+        relationship_key,
+        permission_key,
+        role_key,
+        creator,
+        create_time
+        )values
+        <foreach collection="relationshipList" item="relationship" separator=",">
+            (
+            #{relationship.relationshipKey,jdbcType=VARCHAR},
+            #{relationship.permissionKey,jdbcType=VARCHAR},
+            #{relationship.roleKey,jdbcType=VARCHAR},
+            #{relationship.creator,jdbcType=VARCHAR},
+            #{relationship.createTime,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+
+
+</mapper>

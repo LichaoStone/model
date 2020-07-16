@@ -1,0 +1,109 @@
+
+spring:
+#  profiles:
+#    active: dev
+  servlet:
+      multipart:
+        max-file-size: 2MB
+        max-request-size: 2MB
+  freemarker:
+      checkTemplateLocation: false
+  groovy:
+    template:
+      check-template-location: false
+
+  datasource:
+     type: com.alibaba.druid.pool.DruidDataSource
+     driverClassName: com.mysql.jdbc.Driver
+     #druid连接池配置
+     druid:
+      #主库数据源
+      master:
+         url: jdbc:mysql://localhost:3306/park?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&tinyInt1isBit=false
+         username: root
+         password: 123456
+      #备数据源
+      slave:
+         enabled : false #关闭
+         url: jdbc:mysql://localhost:3306/park?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&tinyInt1isBit=false
+         username: root
+         password: 123456
+         #配置初始化连接数大小
+      initial-size: 10
+      # 最大连接数
+      max-active: 50
+      #最小连接数
+      min-idle: 10
+      #获取连接等待超时时间
+      max-wait: 5000
+      pool-prepared-statements: true #是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+      max-pool-prepared-statement-per-connection-size: 20
+      validation-query: SELECT 1 FROM DUAL
+      validation-query-timeout: 20000
+      test-on-borrow: false #申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-on-return: false #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      test-while-idle: true #建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      time-between-eviction-runs-millis: 60000 #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      min-evictable-idle-time-millis: 300000  #一个连接在池中最小生存的时间，单位是毫秒
+      #StatViewServlet配置。（因为暴露的监控信息比较敏感，支持密码加密和访问ip限定）
+      stat-view-servlet:
+       enabled: true
+       url-pattern: /druid/*
+       #可以增加访问账号密码【去掉注释就可以】
+       #login-username: admin
+       #login-password: admin
+      filter:
+       stat:
+         log-slow-sql: true
+         slow-sql-millis: 1000
+         merge-sql: true
+       wall:
+         config:
+           multi-statement-allow: true
+  mvc:
+    view:
+      prefix: /views/
+      suffix: .jsp
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 6000
+    commandTimeout: 5000
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 100
+        max-wait: -1
+        min-idle: 0
+  kafka:
+    bootstrap.servers: 10.23.187.11:9092,10.23.187.12:9092,10.23.187.13:9092
+  zookeeper:
+    address: 10.23.187.11:2181,10.23.187.12:2181,10.23.187.13:2181
+  data:
+    elasticsearch:
+      cluster-name: docker-cluster
+      cluster-nodes: localhost:9300
+  elasticsearch:
+    rest:
+      uris: ["http://localhost:9200"]
+      ipAddrs:
+        - localhost:9200
+logging:
+  config: classpath:logback-spring.xml
+server:
+  port: 8888
+iptv:
+  # 是否异步记录用户操作日志
+  #openAopLog: true
+  # 单次最大批量入库数量
+  max:
+    batch:
+      insert:
+        num: 1000
+  shiro:
+    # 后端免认证接口 url
+    # anonUrl: /**
+    anonUrl: /login/login
+    # token有效期，单位秒
+    jwtTimeOut: 3600

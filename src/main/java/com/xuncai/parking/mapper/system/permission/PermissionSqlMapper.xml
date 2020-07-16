@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuncai.parking.mapper.system.permission.PermissionSqlMapper" >
+    <resultMap id="BaseResultMap" type="com.xuncai.parking.bean.system.permission.vo.PermissionVO" >
+        <result column="permission_key"          property="permissionKey"/>
+        <result column="permission_id"           property="permissionId"/>
+        <result column="permission_code"         property="permissionCode"/>
+        <result column="parent_id"               property="parentId"/>
+        <result column="name"                    property="name"/>
+        <result column="url"                     property="url"/>
+        <result column="order_num"                property="orderNum"/>
+        <result column="icon"                    property="icon"/>
+        <result column="level"                   property="level"/>
+        <result column="type"                    property="type"/>
+        <result column="description"             property="description"/>
+        <result column="create_time"             property="createTime"/>
+        <result column="update_time"             property="updateTime"/>
+        <result column="creator"                 property="creator"/>
+    </resultMap>
+
+    <!-- t_permission table all fields -->
+    <sql id="Base_Column_List" >
+			permission.permission_key,
+			permission.permission_id,
+			permission.permission_code,
+			permission.parent_id,
+			permission.name,
+			permission.url,
+			permission.order_num,
+			permission.icon,
+			permission.level,
+			permission.type,
+			permission.description,
+			permission.create_time,
+			permission.update_time
+			permission.creator
+	</sql>
+
+    <!-- 插入记录 -->
+    <insert id="insert" parameterType="com.xuncai.parking.bean.system.permission.vo.PermissionVO" >
+		insert into t_permission(
+				permission_key,
+				permission_name,
+				permission_descript,
+				show_url,
+				get_data_url,
+				parent_key,
+				order_num,
+				creator,
+				show_status,
+				create_time
+		)values (
+				#{permissionKey,jdbcType=VARCHAR},
+				#{permissionName,jdbcType=VARCHAR},
+				#{permissionDescript,jdbcType=VARCHAR},
+				#{showUrl,jdbcType=VARCHAR},
+				#{getDataUrl,jdbcType=VARCHAR},
+				#{parentKey,jdbcType=VARCHAR},
+				#{orderNum,jdbcType=VARCHAR},
+				#{creator,jdbcType=VARCHAR},
+				#{showStatus,jdbcType=VARCHAR},
+				#{createTime,jdbcType=VARCHAR}
+		)
+	</insert>
+
+    <!-- 根据id，修改记录-->
+    <update id="update" parameterType="com.xuncai.parking.bean.system.permission.vo.PermissionVO" >
+	 	update t_permission set
+
+				permission_name = #{permissionName,jdbcType=VARCHAR},
+				permission_descript = #{permissionDescript,jdbcType=VARCHAR},
+				show_url = #{showUrl,jdbcType=VARCHAR},
+				get_data_url = #{getDataUrl,jdbcType=VARCHAR},
+				parent_key = #{parentKey,jdbcType=VARCHAR},
+				order_num = #{orderNum,jdbcType=VARCHAR},
+				creator = #{creator,jdbcType=VARCHAR},
+				show_status = #{showStatus,jdbcType=VARCHAR},
+				create_time = #{createTime,jdbcType=VARCHAR}
+		where permission_key = #{permissionKey}
+	</update>
+
+    <delete id="delete" parameterType="com.xuncai.parking.bean.system.permission.vo.PermissionVO">
+		delete from t_permission where permission_key = #{permissionKey}
+	</delete>
+
+    <delete id="deletePermissionByRoleId" parameterType="com.xuncai.parking.bean.system.permission.vo.PermissionVO">
+		delete from t_permission where permission_key = #{permissionKey}
+	</delete>
+
+    <update id="updateBySelective" parameterType="com.xuncai.parking.bean.system.permission.vo.PermissionVO" >
+        update t_permission
+        <set>
+            <if test="permissionName != null and permissionName != ''">
+                permission_name = #{permissionName},
+            </if>
+            <if test="permissionDescript != null and permissionDescript != ''">
+                permission_descript = #{permissionDescript},
+            </if>
+            <if test="showUrl != null and showUrl != ''">
+                show_url = #{showUrl},
+            </if>
+            <if test="getDataUrl != null and getDataUrl != ''">
+                get_data_url = #{getDataUrl},
+            </if>
+            <if test="parentKey != null and parentKey != ''">
+                parent_key = #{parentKey},
+            </if>
+            <if test="orderNum != null">
+                order_num = #{orderNum},
+            </if>
+            <if test="creator != null and creator != ''">
+                creator = #{creator},
+            </if>
+            <if test="showStatus != null">
+                show_status = #{showStatus},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+        </set>
+        where permission_key = #{permissionKey}
+    </update>
+    <!-- 自定义sql -->
+    <!-- 查询条件 -->
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim  suffixOverrides="," >
+            <if test="permissionKey != null and permissionKey != ''">
+                and permission.permission_key = #{permissionKey}
+            </if>
+            <if test="permissionName != null and permissionName != ''">
+                and permission.permission_name = #{permissionName}
+            </if>
+            <if test="permissionDescript != null and permissionDescript != ''">
+                and permission.permission_descript = #{permissionDescript}
+            </if>
+            <if test="showUrl != null and showUrl != ''">
+                and permission.show_url = #{showUrl}
+            </if>
+            <if test="getDataUrl != null and getDataUrl != ''">
+                and permission.get_data_url = #{getDataUrl}
+            </if>
+            <if test="parentKey != null and parentKey != ''">
+                and permission.parent_key = #{parentKey}
+            </if>
+            <if test="orderNum != null">
+                and permission.order_num = #{orderNum}
+            </if>
+            <if test="creator != null and creator != ''">
+                and permission.creator = #{creator}
+            </if>
+            <if test="1 != null">
+                and permission.show_status = 1
+            </if>
+            <if test="createTime != null">
+                and permission.create_time = #{createTime}
+            </if>
+            <!---->
+            <if test="roleKey != null and roleKey != '' ">
+                and relationship.role_key = #{roleKey}
+            </if>
+        </trim>
+    </sql>
+    <!-- bean 扩展字段  -->
+    <resultMap id="BaseResultMapVo" extends="BaseResultMap" type="com.xuncai.parking.bean.system.permission.vo.PermissionVO" >
+
+    </resultMap>
+    <!-- t_permission 信息 -->
+    <select id="getPermissionBeanVoById"  resultMap="BaseResultMapVo" parameterType="Object">
+        select
+        <include refid="Base_Column_List" />
+        from t_permission permission
+        where permission_key = #{permissionKey}
+    </select>
+
+    <select id="getCountByQuery" resultType="java.lang.Long"  parameterType="Object">
+        select count(1)
+        from t_permission permission
+        <include refid="Example_Where_Clause"/>
+    </select>
+
+    <!-- 查询t_permission列表 -->
+    <select id="getListByQuery" resultMap="BaseResultMapVo"  parameterType="Object">
+        select
+        <include refid="Base_Column_List"/>
+        from t_permission permission
+        <include refid="Example_Where_Clause"/>
+        order by order_num
+    </select>
+    <!-- 查询t_permission列表 -->
+    <select id="getRolePerssionIdListByRoleId" resultType="java.lang.String"  parameterType="Object">
+        select
+        permission.permission_key
+        from t_permission permission
+        left join t_role_permission_relationship relationship on permission.permission_key = relationship.permission_key
+        <include refid="Example_Where_Clause"/>
+        order by order_num
+    </select>
+
+</mapper>

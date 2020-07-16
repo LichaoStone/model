@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuncai.parking.mapper.system.role.RoleSqlMapper" >
+    <!-- Result Map-->
+    <resultMap id="BaseResultMap" type="com.xuncai.parking.mapper.system.role.RoleSqlMapper" >
+        <result column="role_key"    property="roleKey"/>
+        <result column="role_name"   property="roleName"/>
+        <result column="status"      property="status"/>
+        <result column="create_time" property="createTime"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+    <!-- t_role table all fields -->
+    <sql id="Base_Column_List" >
+			role_key,
+			role_name,
+			status,
+			create_time,
+			description
+	</sql>
+
+    <!-- 插入记录 -->
+    <insert id="insertRole" parameterType="com.xuncai.parking.mapper.system.role.RoleSqlMapper" >
+		insert into t_role(
+				role_key,
+				role_name,
+				status,
+				create_time,
+				description
+		)values (
+				#{roleKey,jdbcType=VARCHAR},
+				#{roleName,jdbcType=VARCHAR},
+				#{status,jdbcType=VARCHAR},
+				#{createTime,jdbcType=VARCHAR},
+				#{description,jdbcType=VARCHAR}
+		)
+	</insert>
+
+    <!-- 根据id，修改记录-->
+    <update id="updateRole" parameterType="com.xuncai.parking.mapper.system.role.RoleSqlMapper" >
+	 	update t_role set
+				role_name = #{roleName,jdbcType=VARCHAR},
+				status = #{status,jdbcType=VARCHAR},
+				create_time = #{createTime,jdbcType=VARCHAR},
+				description = #{description,jdbcType=VARCHAR}
+		where role_key = #{roleKey}
+	</update>
+
+    <delete id="deleteRole" parameterType="com.xuncai.parking.mapper.system.role.RoleSqlMapper">
+		delete from t_role where role_key = #{roleKey}
+	</delete>
+
+    <update id="updateRoleBySelective" parameterType="com.xuncai.parking.mapper.system.role.RoleSqlMapper" >
+        update t_role
+        <set>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="description != null">
+                description = #{description},
+            </if>
+        </set>
+        where role_key = #{roleKey}
+    </update>
+    <!-- 自定义sql -->
+    <!-- 查询条件 -->
+    <sql id="Example_Where_Clause">
+        where 1=1
+        <trim  suffixOverrides="," >
+            <if test="roleId != null">
+                and role_key = #{roleKey}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and role_name like concat('%',#{roleName},'%' )
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="description != null">
+                and description = #{description}
+            </if>
+        </trim>
+    </sql>
+    <!-- bean 扩展字段  -->
+    <resultMap id="BaseResultMapVo" extends="BaseResultMap" type="com.xuncai.parking.mapper.system.role.RoleSqlMapper" >
+        <result column="statusName" property="statusName"/>
+    </resultMap>
+    <!-- t_role 信息 -->
+    <select id="getRoleVoById"  resultMap="BaseResultMapVo" parameterType="Object">
+        select
+        <include refid="Base_Column_List" />
+        from t_role
+        where role_key = #{roleKey}
+    </select>
+
+    <select id="getRoleCountByQuery" resultType="java.lang.Long"  parameterType="Object">
+        select count(1)
+        from t_role
+        <include refid="Example_Where_Clause"/>
+    </select>
+
+    <!-- 查询t_role列表 -->
+    <select id="getRoleListByQuery" resultMap="BaseResultMapVo"  parameterType="Object">
+        select
+        (
+        CASE status
+        WHEN '0' THEN
+        '禁用'
+        WHEN '1' THEN
+        '启用'
+        ELSE
+        ''
+        END
+        ) as statusName,
+        <include refid="Base_Column_List"/>
+        from t_role
+        <include refid="Example_Where_Clause"/>
+        order by create_time desc
+    </select>
+
+    <select id="checkRoleName" resultMap="BaseResultMapVo"  parameterType="Object">
+        select
+        <include refid="Base_Column_List"/>
+        from t_role
+        where role_name = #{roleName}
+        <if test="roleId != null">
+            and role_key != #{roleKey}
+        </if>
+    </select>
+
+    <update id="updateRoleStatus" parameterType="Object" >
+        update t_role
+        <set>
+            <if test="status != null">
+                status = #{status},
+            </if>
+        </set>
+        where role_key = #{roleKey}
+    </update>
+
+</mapper>
