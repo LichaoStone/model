@@ -31,7 +31,7 @@
         <shiro.spring.version>1.4.0</shiro.spring.version>
         <shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
         <shiro.freemarker.tags.version>0.1</shiro.freemarker.tags.version>
-        <elasticsearch.version>7.3.1</elasticsearch.version>
+        <elasticsearch.version>7.11.2</elasticsearch.version>
         <lang3.version>3.9</lang3.version>
         <cglib.version>3.2.12</cglib.version>
         <reflections.version>0.9.11</reflections.version>
